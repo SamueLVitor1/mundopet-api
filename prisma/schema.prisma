@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model agendamentos {
+  id_agendamento BigInt       @id @default(autoincrement())
+  id_pet         BigInt
+  id_cliente     BigInt
+  id_funcionario BigInt
+  id_servico     BigInt
+  inicio_em      DateTime     @db.Timestamptz(6)
+  fim_em         DateTime     @db.Timestamptz(6)
+  status         String       @default("AGENDADO") @db.VarChar(20)
+  observacoes    String?
+  criado_em      DateTime     @default(now()) @db.Timestamptz(6)
+  atualizado_em  DateTime     @default(now()) @db.Timestamptz(6)
+  clientes       clientes     @relation(fields: [id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction)
+  funcionarios   funcionarios @relation(fields: [id_funcionario], references: [id_funcionario], onDelete: NoAction, onUpdate: NoAction)
+  pets           pets         @relation(fields: [id_pet], references: [id_pet], onDelete: NoAction, onUpdate: NoAction)
+  servicos       servicos     @relation(fields: [id_servico], references: [id_servico], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model clientes {
+  id_cliente    BigInt         @id @default(autoincrement())
+  nome          String
+  telefone      String?
+  email         String?        @unique
+  observacoes   String?
+  ativo         Boolean        @default(true)
+  criado_em     DateTime       @default(now()) @db.Timestamptz(6)
+  atualizado_em DateTime       @default(now()) @db.Timestamptz(6)
+  agendamentos  agendamentos[]
+  pets          pets[]
+}
+
+model funcionarios {
+  id_funcionario BigInt         @id @default(autoincrement())
+  nome           String
+  email          String?        @unique
+  papel          String         @default("STAFF")
+  ativo          Boolean        @default(true)
+  criado_em      DateTime       @default(now()) @db.Timestamptz(6)
+  atualizado_em  DateTime       @default(now()) @db.Timestamptz(6)
+  agendamentos   agendamentos[]
+}
+
+model pets {
+  id_pet          BigInt         @id @default(autoincrement())
+  id_cliente      BigInt
+  nome            String
+  especie         String
+  raca            String?
+  data_nascimento DateTime?      @db.Date
+  ativo           Boolean        @default(true)
+  criado_em       DateTime       @default(now()) @db.Timestamptz(6)
+  atualizado_em   DateTime       @default(now()) @db.Timestamptz(6)
+  agendamentos    agendamentos[]
+  clientes        clientes       @relation(fields: [id_cliente], references: [id_cliente], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model servicos {
+  id_servico     BigInt         @id @default(autoincrement())
+  nome           String
+  duracao_min    Int
+  preco_centavos Int            @default(0)
+  ativo          Boolean        @default(true)
+  criado_em      DateTime       @default(now()) @db.Timestamptz(6)
+  atualizado_em  DateTime       @default(now()) @db.Timestamptz(6)
+  agendamentos   agendamentos[]
+}
