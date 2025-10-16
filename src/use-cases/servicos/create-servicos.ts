@@ -1,11 +1,10 @@
-
 import { servicos } from "@prisma/client";
 import { ServicosRepositoryInterface } from "../../repositories/interfaces/servicos-repository.interface";
 
 interface CreateServicosRequest {
   nome: string;
-  duracaoEmMinutos: number; 
-  preco?: number; 
+  duracaoEmMinutos: number;
+  preco?: number;
   ativo?: boolean;
 }
 
@@ -20,7 +19,8 @@ export class CreateServicosUseCase {
     const servicos = await this.servicosRepository.create({
       nome: data.nome,
       duracao_min: data.duracaoEmMinutos,
-      preco_centavos: data.preco ? data.preco / 100 : undefined,
+      preco_centavos:
+        data.preco != null ? Math.round(data.preco * 100) : undefined,
       ativo: data.ativo,
     });
     return { servicos };

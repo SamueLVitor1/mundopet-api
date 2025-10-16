@@ -3,6 +3,7 @@ import z from "zod";
 import { PrismaServicosRepository } from "../../../repositories/prisma/servicos-repository";
 import { CreateServicosUseCase } from "../../../use-cases/servicos/create-servicos";
 import { jsonSafe } from "../../../utils/json";
+import { toServicoResponse } from "../../../utils/servicos-mapper";
 
 export async function createServicosController(request: FastifyRequest, reply: FastifyReply) {
 
@@ -22,7 +23,7 @@ export async function createServicosController(request: FastifyRequest, reply: F
         const result = await useCase.execute({
             nome, ativo, duracaoEmMinutos, preco
         });
-        return reply.status(201).send(jsonSafe(result));
+        return reply.status(201).send(jsonSafe(toServicoResponse(result.servicos)));
     } catch (error) {
         return reply.status(500).send({ error: "Internal Server Error" });
     }
