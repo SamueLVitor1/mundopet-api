@@ -21,7 +21,7 @@ export class CreateServicosUseCase {
       duracao_min: data.duracaoEmMinutos,
       preco_centavos:
         data.preco != null ? Math.round(data.preco * 100) : undefined,
-      ativo: data.ativo,
+      ativo: data.ativo ?? true,
     });
     return { servicos };
   }
