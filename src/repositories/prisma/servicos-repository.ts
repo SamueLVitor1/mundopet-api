@@ -1,5 +1,5 @@
 
-import { Prisma } from "@prisma/client";
+import { Prisma, servicos } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import { ServicosRepositoryInterface } from "../interfaces/servicos-repository.interface";
 
@@ -22,5 +22,10 @@ export class PrismaServicosRepository implements ServicosRepositoryInterface {
             data
         });
         return servico;
+    }
+
+    async getAll(){
+        const servicos = await prisma.servicos.findMany();
+        return servicos;
     }
 }

@@ -5,6 +5,20 @@ class FakeServicosRepo {
   async create(data: any) {
     return { id_servico: 1, ...data };
   }
+
+  async findAll() {}
+
+  async findById(id: any) {
+    return null;
+  }
+
+  async update(id: any, data: any) {
+    return { id_servico: id, ...data };
+  }
+
+  async getAll() {
+    return [];
+  }
 }
 
 describe("CreateServicosUseCase", () => {
